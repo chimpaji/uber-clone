@@ -8,6 +8,7 @@ import { GOOGLE_MAP_API } from "@env";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch } from "react-redux";
 import { setOrigin, setDestination } from "../slices/NavSlice";
+import NavFavorite from "../components/NavFavorite";
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ const HomeScreen = () => {
         style={{
           width: 100,
           height: 100,
-          paddingLeft: 100,
+          marginLeft: 20,
           resizeMode: "contain",
         }}
       />
@@ -29,6 +30,7 @@ const HomeScreen = () => {
         placeholder="Where From?"
         styles={{ container: { flex: 0 }, textInput: { fontSize: 18 } }}
         minLength={2}
+        returnKeyType="search"
         enablePoweredByContainer={false}
         onPress={(data, details = null) => {
           console.log(
@@ -58,6 +60,7 @@ const HomeScreen = () => {
       />
 
       <NavOptions />
+      <NavFavorite />
     </SafeAreaView>
   );
 };

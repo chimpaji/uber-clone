@@ -25,7 +25,9 @@ const NavOptions = () => {
   const orgin = useSelector((state) => state.nav.origin);
   return (
     <FlatList
+      style={tw`pl-5`}
       data={data}
+      contentContainerStyle={{ justifyContent: "center" }}
       horizontal
       keyExtractor={(data) => data.id}
       renderItem={({ item }) => (

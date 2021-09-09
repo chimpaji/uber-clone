@@ -5,6 +5,7 @@ import { Image } from "react-native";
 import { View, Text } from "react-native";
 import { Icon } from "react-native-elements";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 
 const data = [
@@ -28,9 +29,14 @@ const data = [
   },
 ];
 
+const SURGE_CHARGE_RATE = 1.5;
+
 const RideOptionsCard = () => {
   const navigation = useNavigation();
   const [selected, setSelected] = useState("");
+  const travelTimeInformation = useSelector(
+    (state) => state.nav.travelTimeInformation
+  );
   return (
     <View style={tw`bg-white flex-grow`}>
       <View>
@@ -58,11 +64,21 @@ const RideOptionsCard = () => {
               source={{ uri: image }}
               style={{ width: 100, height: 100, resizeMode: "contain" }}
             />
-            <View style={tw`-ml-6`}>
+            <View style={tw`-ml-6 flex items-center`}>
               <Text style={tw`text-xl font-bold`}>{title}</Text>
-              <Text>Travel time...</Text>
+              <Text>{travelTimeInformation?.duration?.text}</Text>
             </View>
-            <Text>$99</Text>
+            <Text style={tw`text-xl`}>
+              {new Intl.NumberFormat("en-gb", {
+                style: "currency",
+                currency: "GBP",
+              }).format(
+                (travelTimeInformation?.duration.value *
+                  SURGE_CHARGE_RATE *
+                  multiple) /
+                  100
+              )}
+            </Text>
           </TouchableOpacity>
         )}
       />

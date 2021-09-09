@@ -1,16 +1,19 @@
 import React, { useEffect, useRef } from "react";
 import { View, Text } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import tw from "tailwind-react-native-classnames";
 import MapViewDirections from "react-native-maps-directions";
 import { GOOGLE_MAP_API } from "@env";
+import { setTravelTimeInformation } from "../slices/NavSlice";
 
 const Map = () => {
   const origin = useSelector((state) => state?.nav?.origin);
   const destination = useSelector((state) => state?.nav?.destination);
   const mapRef = useRef(null);
+  const dispatch = useDispatch();
 
+  //to zoom out when there's destination selected
   useEffect(() => {
     if (!origin || !destination) return;
     mapRef.current.fitToSuppliedMarkers(["origin", "destination"], {
@@ -22,6 +25,18 @@ const Map = () => {
       },
     });
   }, [origin, destination]);
+  //to load distance and time est
+  useEffect(() => {
+    if (!origin || !destination) return;
+    fetch(`https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=${origin.description}&destinations=${destination.description}&key=${GOOGLE_MAP_API}
+      `)
+      .then((res) => res.json())
+      .then((data) => {
+        dispatch(setTravelTimeInformation(data?.rows[0]?.elements[0]));
+      });
+    //we need distance:data.rows[0].elements[0].distance.value  duration:data.rows[0].elements[0].duration.value
+  }, [origin, destination, GOOGLE_MAP_API]);
+
   return (
     <MapView
       ref={mapRef}

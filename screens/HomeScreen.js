@@ -6,9 +6,12 @@ import tw from "tailwind-react-native-classnames";
 import NavOptions from "../components/NavOptions";
 import { GOOGLE_MAP_API } from "@env";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch } from "react-redux";
+import { setOrigin, setDestination } from "../slices/NavSlice";
 
 const HomeScreen = () => {
-  console.log("key:", GOOGLE_MAP_API);
+  const dispatch = useDispatch();
+
   return (
     <SafeAreaView style={tw``}>
       <Image
@@ -26,11 +29,29 @@ const HomeScreen = () => {
         placeholder="Where From?"
         styles={{ container: { flex: 0 }, textInput: { fontSize: 18 } }}
         minLength={2}
-        onPress={(data, details) => console.log(data, details)}
+        enablePoweredByContainer={false}
+        onPress={(data, details = null) => {
+          console.log(
+            "data=>",
+            data.description,
+            "details=>",
+            details?.geometry?.location
+          );
+          dispatch(
+            setOrigin({
+              location: details?.geometry?.location,
+              description: data?.description,
+            })
+          );
+          dispatch(setDestination(null));
+          //place location address detail: data.description
+          //lat long obejct: details?.geometry?.location
+        }}
         query={{
           key: GOOGLE_MAP_API,
           language: "en",
         }}
+        fetchDetails={true}
         nearbyPlacesAPI="GooglePlacesSearch"
         debounce={400}
         onFail={(error) => console.log(error)}

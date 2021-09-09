@@ -71,7 +71,7 @@ const NavFavorite = () => {
               })
             );
 
-            if (ori && dest) navigation.navigate("MapScreen");
+            navigation.navigate("MapScreen");
           }}
         >
           <Icon
